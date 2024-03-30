@@ -1,0 +1,17 @@
+
+{% block content %}
+
+
+
+
+
+<form method="POST" action="{% url 'Login' %}",autocomplete="off">
+   {% csrf_token %}
+    
+   {{form}}
+   <input type="submit" value="login">
+</form> 
+<a href="{% url 'password_reset' %}">Forgot password? </a>  
+<br>
+<a href="{% url 'register' %}">Sign up </a>
+{% endblock content %}

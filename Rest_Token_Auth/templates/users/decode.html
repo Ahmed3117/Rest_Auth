@@ -1,0 +1,13 @@
+{% block content %}
+  <h2>Decode</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    
+    <button type="submit">Decode</button>
+  </form>
+{% endblock %}
+
+
+    
+

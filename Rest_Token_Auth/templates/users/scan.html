@@ -1,0 +1,17 @@
+
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scan Image</title>
+</head>
+<body>
+    <h2>Scan Image</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form }}
+        <button type="submit">Scan</button>
+    </form>
+</body>
+</html>
+{% endblock content %}

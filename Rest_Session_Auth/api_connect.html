@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Account Page</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <h2>Register</h2>
+    <form id="register-form">
+        email: <input type="text" id="register-email"><br>
+        username: <input type="text" id="register-username"><br>
+        Password: <input type="password" id="register-password"><br>
+        <input type="submit" value="Register">
+    </form>
+
+    <h2>Login</h2>
+    <form id="login-form">
+        email: <input type="text" id="login-email"><br>
+        Password: <input type="password" id="login-password"><br>
+        <input type="submit" value="Login">
+    </form>
+
+    <button id="logout">Logout</button>
+
+    <h2>Change Password</h2>
+    <form id="change-password-form">
+        Old Password: <input type="password" id="old-password"><br>
+        New Password: <input type="password" id="new-password"><br>
+        <input type="submit" value="Change Password">
+    </form>
+
+    <script>
+
+        
+
+
+        $(document).ready(function(){
+
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    let cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        let cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            
+            let csrftoken = getCookie('csrftoken');
+            
+            let headers = new Headers();
+            headers.append('X-CSRFToken', csrftoken);
+
+
+
+
+            $("#register-form").submit(function(e){
+                e.preventDefault();
+                $.ajax({
+                    url: 'http://127.0.0.1:8000/accounts/register/',  // update with your register endpoint
+                    type: 'post',
+                    data: {email: $('#register-email').val(),username: $('#register-username').val(), password: $('#register-password').val()},
+                    complete: function(jqXHR, textStatus) {
+                        console.log(jqXHR.status);
+                    },
+                    success: function(response){
+                        alert('Registered successfully');
+                    },
+                    error: function(error){
+                        alert('Registration failed');
+                    }
+                });
+            });
+
+            $("#login-form").submit(function(e){
+                e.preventDefault();
+                $.ajax({
+                    url: 'http://127.0.0.1:8000/accounts/login/',  // update with your login endpoint
+                    type: 'post',
+                    data: {email: $('#login-email').val(), password: $('#login-password').val()},
+                    success: function(response){
+                        alert('Logged in successfully');
+                        // Store the token in local storage
+                        
+                        localStorage.setItem('session_id', response.session_id);
+                        //window.location.href = 'https://youtube.com';
+                    },
+                    error: function(error){
+                        alert('Login failed');
+                    }
+                });
+            });
+            
+
+            $("#logout").click(function(){
+                $.ajax({
+                    url: 'http://127.0.0.1:8000/accounts/logout/',  // update with your logout endpoint
+                    type: 'post',
+                    
+                    success: function(response){
+                        localStorage.removeItem('session_id');
+                        alert('Logged out successfully');
+                    },
+                    error: function(error){
+                        alert('Logout failed');
+                    }
+                });
+            });
+            
+
+            $("#change-password-form").submit(function(e){
+
+                e.preventDefault();
+                $.ajax({
+                    url: 'http://127.0.0.1:8000/accounts/change-password/',
+                    type: 'post',
+                    data: {
+                        old_password: $('#old-password').val(), 
+                        new_password: $('#new-password').val(), 
+                        csrftoken: 'vJ9Wpio278wTjH3KJSobb1nDqWhahPO6'
+                    },                    
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader("Authorization", "Session " + localStorage.getItem('session_id'));
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    },
+                    success: function(response){
+                        alert('password changed successfully');
+                        localStorage.removeItem('session_id');
+                    },
+                    error: function(error){
+                        alert('Password change failed');
+                    }
+                });
+                
+            });
+        
+        });
+    </script>
+</body>
+</html>

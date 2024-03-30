@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}STEGO{% endblock %}</title>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="your-container-class">
+                <a href="{% url 'Home' %}" class="your-link-class">
+                    <img src="{% static 'images/stego_logo.PNG' %}" alt="Logo" class="your-logo-class">
+                </a>
+                <a href="{% url 'Home' %}" class="your-link-class">Home</a>
+                <a href="{% url 'About' %}" class="your-link-class">About</a>
+                <a href="{% url 'Contact' %}" class="your-link-class">Contact</a>
+                <img src="{% static 'images/default_profile_image.png' %}"  class="your-image-profile-class">
+            </div>
+        </nav>
+    </header>
+
+    {% block content %}
+    {% endblock %}
+
+    {% if user.is_authenticated %}
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-2">
+                    {% if user.image_profile %}
+                        <img src="{{ user.image_profile.url }}"  class="img-fluid rounded-circle">
+                    {% else %}
+                        <img src="{% static 'img/default_profile.png' %}"  class="img-fluid rounded-circle">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <footer>
+        <!-- Your footer content here -->
+    </footer>
+</body>
+</html>
